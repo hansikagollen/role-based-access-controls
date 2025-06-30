@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Dashboard</title>
+</head>
+<body>
+  <h1>Welcome, User 👤</h1>
+  <p>This is your personal dashboard. Only Users and Admins can see this.</p>
+
+  <button onclick="logout()">Logout</button>
+
+  <script>
+    async function logout() {
+      const res = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (res.ok) {
+        alert('Logged out!');
+        window.location.href = '/index.html';
+      }
+    }
+  </script>
+</body>
+</html>

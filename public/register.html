@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+</head>
+<body>
+  <h2>Register</h2>
+  <form id="registerForm">
+    <input type="text" id="username" placeholder="Username" required /><br><br>
+    <input type="email" id="email" placeholder="Email" required /><br><br>
+    <input type="password" id="password" placeholder="Password" required /><br><br>
+    <label>Role:
+      <select id="role">
+        <option value="User">User</option>
+        <option value="Admin">Admin</option>
+      </select>
+    </label><br><br>
+    <button type="submit">Register</button>
+  </form>
+
+  <br>
+  <button onclick="window.location.href='/index.html'">Go to Login</button>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('role').value;
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password, role })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert('Registration successful!');
+          window.location.href = '/index.html';
+        } else {
+          alert(data.message || 'Registration failed');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Something went wrong during registration.');
+      }
+    });
+  </script>
+</body>
+</html>
