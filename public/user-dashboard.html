@@ -1,26 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>User Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e3f2fd;
+      text-align: center;
+      padding: 50px;
+    }
+
+    .dashboard {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #0d6efd;
+      margin-bottom: 10px;
+    }
+
+    #userInfo {
+      margin: 15px 0 25px;
+      font-size: 17px;
+      color: #444;
+    }
+
+    .controls {
+      text-align: left;
+      margin: 0 auto 30px;
+      max-width: 400px;
+    }
+
+    .controls button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 15px;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+
+    .controls button:hover {
+      background-color: #0a58ca;
+    }
+
+    .logout-btn {
+      background-color: #dc3545;
+    }
+
+    .logout-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome, User 👤</h1>
-  <p>This is your personal dashboard. Only Users and Admins can see this.</p>
+  <div class="dashboard">
+    <h1>👋 Welcome, User!</h1>
+    <p id="userInfo">Loading your details...</p>
 
-  <button onclick="logout()">Logout</button>
+    <!-- 🔧 User Controls -->
+    <div class="controls">
+      <button onclick="viewProfile()">👤 View Profile</button>
+      <button onclick="editProfile()">✏️ Edit Profile</button>
+      <button onclick="changePassword()">🔑 Change Password</button>
+      <button onclick="submitFeedback()">📝 Submit Feedback</button>
+      <button onclick="contactSupport()">📞 Contact Support</button>
+    </div>
 
-  <script>
-    async function logout() {
-      const res = await fetch('/api/auth/logout', {
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+ <script>
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
+
+    try {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
-        credentials: 'include'
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Required to send cookies
+        body: JSON.stringify({ email, password, rememberMe })
       });
+
+      const data = await res.json();
+
       if (res.ok) {
-        alert('Logged out!');
-        window.location.href = '/index.html';
+        // Store auth info
+        if (rememberMe) {
+          localStorage.setItem('authDemoEmail', data.email);
+          localStorage.setItem('authDemoRole', data.role);
+          localStorage.setItem('authDemoRemember', 'true');
+        } else {
+          sessionStorage.setItem('authDemoEmail', data.email);
+          sessionStorage.setItem('authDemoRole', data.role);
+          sessionStorage.setItem('authDemoRemember', 'false');
+        }
+
+        alert('Login successful!');
+
+        // ✅ Redirect based on role
+        if (data.role === 'Admin') {
+          window.location.href = '/admin-dashboard.html';
+        } else if (data.role === 'User') {
+          window.location.href = '/user-dashboard.html';
+        } else {
+          alert('Unknown role');
+        }
+      } else {
+        alert(data.message || 'Login failed');
       }
+
+    } catch (err) {
+      console.error('Error:', err);
+      alert('Error during login');
     }
-  </script>
+  });
+</script>
+
 </body>
 </html>

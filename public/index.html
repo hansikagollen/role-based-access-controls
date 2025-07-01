@@ -1,36 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Login</title>
+  <meta charset="UTF-8" />
+  <title>Login - Auth Demo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e0eafc, #cfdef3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 35px 40px;
+      border-radius: 12px;
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+      width: 380px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #0077cc;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    select {
+      background-color: #f8f8f8;
+    }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+
+    button {
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    .link {
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .link a {
+      color: #0077cc;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <h2>Login</h2>
-  <form id="loginForm">
-    <input type="email" id="email" placeholder="Email" required /><br><br>
-    <input type="password" id="password" placeholder="Password" required /><br><br>
-    <label><input type="checkbox" id="rememberMe"> Remember Me</label><br><br>
-    <button type="submit">Login</button>
-  </form>
+  <div class="container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
 
-  <br>
-  <button onclick="window.location.href='/register.html'">Go to Register</button>
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="rememberMe" />
+        <label for="rememberMe">Remember Me</label>
+      </div>
 
-  <!-- ✅ Logout Button if Logged In -->
-  <div id="logoutSection" style="display:none; margin-top: 20px;">
-    <p>You are already logged in.</p>
-    <button onclick="logout()">Logout</button>
+      <label for="role">Login as:</label>
+      <select id="role" required>
+        <option value="User">User</option>
+        <option value="Admin">Admin</option>
+      </select>
+
+      <button type="submit">Login</button>
+      <p class="link">Not registered yet? <a href="register.html">Register here</a></p>
+    </form>
   </div>
 
   <script>
-    // Check if cookie exists to show logout
-    window.onload = () => {
-      const cookie = document.cookie.includes('token');
-      if (cookie) {
-        document.getElementById('logoutSection').style.display = 'block';
-      }
-    };
-
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -49,11 +126,27 @@
         const data = await res.json();
 
         if (res.ok) {
+          if (rememberMe) alert('✅ Stay signed in');
           alert('Login successful!');
+
+          localStorage.clear();
+          sessionStorage.clear();
+
+          if (rememberMe) {
+            localStorage.setItem('authDemoEmail', data.email);
+            localStorage.setItem('authDemoRole', data.role);
+            localStorage.setItem('authDemoRemember', true);
+          } else {
+            sessionStorage.setItem('authDemoEmail', data.email);
+            sessionStorage.setItem('authDemoRole', data.role);
+          }
+
           if (data.role === 'Admin') {
             window.location.href = '/admin-dashboard.html';
-          } else {
+          } else if (data.role === 'User') {
             window.location.href = '/user-dashboard.html';
+          } else {
+            alert('Unknown role');
           }
         } else {
           alert(data.message || 'Login failed');
@@ -63,17 +156,6 @@
         alert('Error during login');
       }
     });
-
-    async function logout() {
-      const res = await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-      });
-      if (res.ok) {
-        alert('Logged out!');
-        location.reload();
-      }
-    }
   </script>
 </body>
 </html>

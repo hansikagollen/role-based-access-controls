@@ -1,25 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fdf6e3;
+      text-align: center;
+      padding: 50px;
+    }
+
+    .dashboard {
+      background-color: #fff3cd;
+      border-radius: 10px;
+      border: 1px solid #ffeeba;
+      padding: 30px;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      color: #856404;
+      margin-bottom: 10px;
+    }
+
+    #adminInfo {
+      margin: 15px 0 25px;
+      font-size: 17px;
+      color: #555;
+    }
+
+    .controls {
+      text-align: left;
+      margin: 0 auto 30px;
+      max-width: 400px;
+    }
+
+    .controls button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 15px;
+      background-color: #ffc107;
+      color: #212529;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+    }
+
+    .controls button:hover {
+      background-color: #e0a800;
+    }
+
+    .logout-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .logout-btn:hover {
+      background-color: #c82333;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome, Admin 🛡️</h1>
-  <p>This is the Admin Panel. Only Admins can see this page.</p>
+  <div class="dashboard">
+    <h1>🔒 Admin Dashboard</h1>
+    <p id="adminInfo">Loading your details...</p>
 
-  <button onclick="logout()">Logout</button>
+    <!-- 🔧 Admin Controls -->
+    <div class="controls">
+      <button onclick="fetchUsers()">👥 View All Registered Users</button>
+      <button onclick="promoteUser()">⬆️ Promote User to Admin</button>
+      <button onclick="deleteUser()">❌ Delete a User</button>
+      <button onclick="viewLogs()">📄 View System Logs</button>
+      <button onclick="emailAllUsers()">📧 Email All Users</button>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
 
   <script>
-    async function logout() {
-      const res = await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-      });
-      if (res.ok) {
-        alert('Logged out!');
-        window.location.href = '/index.html';
-      }
+    const email = localStorage.getItem('authDemoEmail') || sessionStorage.getItem('authDemoEmail');
+    const role = localStorage.getItem('authDemoRole') || sessionStorage.getItem('authDemoRole');
+    const remember = localStorage.getItem('authDemoRemember');
+
+    if (email && role === 'Admin') {
+      document.getElementById('adminInfo').textContent = `Logged in as ${email} (${role})` +
+        (remember ? ' - Stay signed in' : '');
+    } else {
+      window.location.href = '/index.html';
+    }
+
+    function logout() {
+      localStorage.clear();
+      sessionStorage.clear();
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      window.location.href = '/index.html';
+    }
+
+    // 💡 Admin control placeholders (function stubs)
+    function fetchUsers() {
+      alert("Fetching all registered users... (feature to be implemented)");
+    }
+
+    function promoteUser() {
+      alert("Promoting a user to admin... (feature to be implemented)");
+    }
+
+    function deleteUser() {
+      alert("Deleting a user... (feature to be implemented)");
+    }
+
+    function viewLogs() {
+      alert("Viewing system logs... (feature to be implemented)");
+    }
+
+    function emailAllUsers() {
+      alert("Sending email to all users... (feature to be implemented)");
     }
   </script>
 </body>
