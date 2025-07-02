@@ -1,3 +1,4 @@
+module.exports = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,7 +104,7 @@
       </select>
 
       <button type="submit">Login</button>
-      <p class="link">Not registered yet? <a href="register.html">Register here</a></p>
+      <p class="link">Not registered yet? <a href="/register">Register here</a></p>
     </form>
   </div>
 
@@ -142,9 +143,9 @@
           }
 
           if (data.role === 'Admin') {
-            window.location.href = '/admin-dashboard.html';
+            window.location.href = '/admin-dashboard';
           } else if (data.role === 'User') {
-            window.location.href = '/user-dashboard.html';
+            window.location.href = '/user-dashboard';
           } else {
             alert('Unknown role');
           }
@@ -159,3 +160,4 @@
   </script>
 </body>
 </html>
+`;

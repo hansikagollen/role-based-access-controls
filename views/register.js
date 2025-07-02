@@ -1,3 +1,4 @@
+module.exports = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -105,7 +106,7 @@
       </select>
 
       <button type="submit">Register</button>
-      <p class="link">Already registered? <a href="index.html">Login here</a></p>
+      <p class="link">Already registered? <a href="/login">Login here</a></p>
     </form>
   </div>
 
@@ -127,19 +128,29 @@
           body: JSON.stringify({ username, email, password, role, rememberMe })
         });
 
-        const data = await res.json();
+        let data;
+        try {
+          data = await res.json();
+        } catch (jsonErr) {
+          const text = await res.text();
+          console.error('Non-JSON response:', text);
+          alert(\`Server error:\\n\${text}\`);
+          return;
+        }
 
         if (res.ok) {
-          alert('Registration successful!');
-          window.location.href = 'index.html';
+          alert('Registration successful! Please check your email to verify.');
+          window.location.href = '/login';
         } else {
           alert(data.message || 'Something went wrong during registration.');
         }
+
       } catch (err) {
-        console.error(err);
+        console.error('Fetch error:', err);
         alert('Error during registration');
       }
     });
   </script>
 </body>
 </html>
+`;

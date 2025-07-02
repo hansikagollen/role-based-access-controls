@@ -7,29 +7,36 @@ const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 
+// Import HTML pages as JS strings
+const loginPage = require('./views/index');
+const registerPage = require('./views/register');
+const userDashboard = require('./views/user-dashboard');
+const adminDashboard = require('./views/admin-dashboard');
+
 const app = express();
 
-// ✅ CORS: Frontend served from SAME server (no need for cross-origin)
-app.use(cors({
-  origin: 'http://localhost:5000', 
-  credentials: true
-}));
-
-// ✅ Middleware
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Serve static frontend
+// Serve static files (if needed for JS or CSS)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ✅ API routes
+// API routes
 app.use('/api/auth', authRoutes);
 
-// ✅ MongoDB connect + start server
+// HTML routes
+app.get('/', (req, res) => res.redirect('/login'));
+app.get('/login', (req, res) => res.send(loginPage));
+app.get('/register', (req, res) => res.send(registerPage));
+app.get('/user-dashboard', (req, res) => res.send(userDashboard));
+app.get('/admin-dashboard', (req, res) => res.send(adminDashboard));
+
+// Connect MongoDB and start server
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     app.listen(process.env.PORT, () => {
-      console.log(`Server running on port ${process.env.PORT}`);
+      console.log(`🚀 Server running on port ${process.env.PORT}`);
     });
   })
-  .catch(err => console.error('MongoDB connection error:', err));
+  .catch(err => console.error('❌ MongoDB connection error:', err));

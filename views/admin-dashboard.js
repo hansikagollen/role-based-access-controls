@@ -1,3 +1,4 @@
+module.exports = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,7 +72,6 @@
     <h1>🔒 Admin Dashboard</h1>
     <p id="adminInfo">Loading your details...</p>
 
-    <!-- 🔧 Admin Controls -->
     <div class="controls">
       <button onclick="fetchUsers()">👥 View All Registered Users</button>
       <button onclick="promoteUser()">⬆️ Promote User to Admin</button>
@@ -89,39 +89,25 @@
     const remember = localStorage.getItem('authDemoRemember');
 
     if (email && role === 'Admin') {
-      document.getElementById('adminInfo').textContent = `Logged in as ${email} (${role})` +
+      document.getElementById('adminInfo').textContent = \`Logged in as \${email} (\${role})\` +
         (remember ? ' - Stay signed in' : '');
     } else {
-      window.location.href = '/index.html';
+      window.location.href = '/login';
     }
 
     function logout() {
       localStorage.clear();
       sessionStorage.clear();
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-      window.location.href = '/index.html';
+      window.location.href = '/login';
     }
 
-    // 💡 Admin control placeholders (function stubs)
-    function fetchUsers() {
-      alert("Fetching all registered users... (feature to be implemented)");
-    }
-
-    function promoteUser() {
-      alert("Promoting a user to admin... (feature to be implemented)");
-    }
-
-    function deleteUser() {
-      alert("Deleting a user... (feature to be implemented)");
-    }
-
-    function viewLogs() {
-      alert("Viewing system logs... (feature to be implemented)");
-    }
-
-    function emailAllUsers() {
-      alert("Sending email to all users... (feature to be implemented)");
-    }
+    function fetchUsers() { alert("Fetching users... (to be implemented)"); }
+    function promoteUser() { alert("Promoting user... (to be implemented)"); }
+    function deleteUser() { alert("Deleting user... (to be implemented)"); }
+    function viewLogs() { alert("Viewing logs... (to be implemented)"); }
+    function emailAllUsers() { alert("Emailing users... (to be implemented)"); }
   </script>
 </body>
 </html>
+`;

@@ -1,3 +1,4 @@
+module.exports = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,7 +70,6 @@
     <h1>👋 Welcome, User!</h1>
     <p id="userInfo">Loading your details...</p>
 
-    <!-- 🔧 User Controls -->
     <div class="controls">
       <button onclick="viewProfile()">👤 View Profile</button>
       <button onclick="editProfile()">✏️ Edit Profile</button>
@@ -81,56 +81,31 @@
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
- <script>
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  <script>
+    const email = localStorage.getItem('authDemoEmail') || sessionStorage.getItem('authDemoEmail');
+    const role = localStorage.getItem('authDemoRole') || sessionStorage.getItem('authDemoRole');
+    const remember = localStorage.getItem('authDemoRemember');
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const rememberMe = document.getElementById('rememberMe').checked;
-
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // Required to send cookies
-        body: JSON.stringify({ email, password, rememberMe })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        // Store auth info
-        if (rememberMe) {
-          localStorage.setItem('authDemoEmail', data.email);
-          localStorage.setItem('authDemoRole', data.role);
-          localStorage.setItem('authDemoRemember', 'true');
-        } else {
-          sessionStorage.setItem('authDemoEmail', data.email);
-          sessionStorage.setItem('authDemoRole', data.role);
-          sessionStorage.setItem('authDemoRemember', 'false');
-        }
-
-        alert('Login successful!');
-
-        // ✅ Redirect based on role
-        if (data.role === 'Admin') {
-          window.location.href = '/admin-dashboard.html';
-        } else if (data.role === 'User') {
-          window.location.href = '/user-dashboard.html';
-        } else {
-          alert('Unknown role');
-        }
-      } else {
-        alert(data.message || 'Login failed');
-      }
-
-    } catch (err) {
-      console.error('Error:', err);
-      alert('Error during login');
+    if (email && role === 'User') {
+      document.getElementById('userInfo').textContent = \`Logged in as \${email} (\${role})\` + 
+        (remember ? ' - Stay signed in' : '');
+    } else {
+      window.location.href = '/login';
     }
-  });
-</script>
 
+    function logout() {
+      localStorage.clear();
+      sessionStorage.clear();
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      window.location.href = '/login';
+    }
+
+    function viewProfile() { alert("View Profile (to be implemented)"); }
+    function editProfile() { alert("Edit Profile (to be implemented)"); }
+    function changePassword() { alert("Change Password (to be implemented)"); }
+    function submitFeedback() { alert("Submit Feedback (to be implemented)"); }
+    function contactSupport() { alert("Contact Support (to be implemented)"); }
+  </script>
 </body>
 </html>
+`;
