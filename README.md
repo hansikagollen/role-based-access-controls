@@ -41,7 +41,7 @@ This project is a complete authentication system built using **Node.js**, **Expr
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 
 1. **Install dependencies**
    ```bash
